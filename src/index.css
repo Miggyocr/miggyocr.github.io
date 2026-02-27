@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Fredoka", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+body {
+  background-color: #000000;
+  color: #ffffff;
+  overflow: hidden; /* Prevent scrolling on mobile */
+  touch-action: manipulation; /* Improve touch response */
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.animate-breathe {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes float-up {
+  0% { transform: translateY(0) translateX(0); opacity: 0; }
+  20% { opacity: 0.8; }
+  100% { transform: translateY(-40px) translateX(10px); opacity: 0; }
+}
+
+.animate-float-zzz {
+  animation: float-up 3s ease-out infinite;
+}
+
+.delay-1000 { animation-delay: 1s; }
+.delay-2000 { animation-delay: 2s; }
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  0%, 45%, 55%, 100% { transform: scaleY(1); }
+  50% { transform: scaleY(0.1); }
+}
+
+.animate-blink {
+  animation: blink 5s infinite;
+}
+
+@keyframes eye-move {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(3px, 0); }
+  50% { transform: translate(0, 2px); }
+  75% { transform: translate(-3px, 0); }
+}
+
+.animate-eye-move {
+  animation: eye-move 8s ease-in-out infinite;
+}
+
+@keyframes breathe-subtle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.animate-breathe-subtle {
+  animation: breathe-subtle 4s ease-in-out infinite;
+}
