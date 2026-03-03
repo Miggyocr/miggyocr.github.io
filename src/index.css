@@ -45,23 +45,24 @@ body {
 }
 
 @keyframes blink {
-  0%, 45%, 55%, 100% { transform: scaleY(1); }
-  50% { transform: scaleY(0.1); }
+  0%, 45%, 50%, 100% { transform: scaleY(1); }
+  47%, 48% { transform: scaleY(0.1); }
 }
 
 .animate-blink {
-  animation: blink 5s infinite;
+  animation: blink 6s infinite;
 }
 
 @keyframes eye-move {
   0%, 100% { transform: translate(0, 0); }
-  25% { transform: translate(3px, 0); }
-  50% { transform: translate(0, 2px); }
-  75% { transform: translate(-3px, 0); }
+  20% { transform: translate(2px, -1px); }
+  40% { transform: translate(-2px, 1px); }
+  60% { transform: translate(0, 2px); }
+  80% { transform: translate(1px, -2px); }
 }
 
 .animate-eye-move {
-  animation: eye-move 8s ease-in-out infinite;
+  animation: eye-move 10s ease-in-out infinite;
 }
 
 @keyframes breathe-subtle {
@@ -71,4 +72,41 @@ body {
 
 .animate-breathe-subtle {
   animation: breathe-subtle 4s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(2deg); }
+  75% { transform: rotate(-2deg); }
+}
+
+.animate-sway {
+  animation: sway 6s ease-in-out infinite;
+}
+
+@keyframes dance {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+.animate-dance {
+  animation: dance 2.5s ease-in-out infinite;
+}
+
+@keyframes wave-left {
+  0%, 100% { transform: rotate(-45deg) translate(-5px, -5px); }
+  50% { transform: rotate(10deg) translate(0, 0); }
+}
+
+.animate-wave-left {
+  animation: wave-left 2.5s ease-in-out infinite;
+}
+
+@keyframes wave-right {
+  0%, 100% { transform: rotate(45deg) translate(5px, -5px); }
+  50% { transform: rotate(-10deg) translate(0, 0); }
+}
+
+.animate-wave-right {
+  animation: wave-right 2.5s ease-in-out infinite;
 }

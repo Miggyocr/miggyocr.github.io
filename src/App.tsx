@@ -27,8 +27,8 @@ const checkIsSleepTime = (current: Date, start: string, end: string) => {
 
 export default function App() {
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [sleepStart, setSleepStart] = useState('20:00');
-  const [sleepEnd, setSleepEnd] = useState('06:00');
+  const [sleepStart, setSleepStart] = useState('00:00');
+  const [sleepEnd, setSleepEnd] = useState('05:00');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [tapCount, setTapCount] = useState(0);
@@ -36,6 +36,7 @@ export default function App() {
   const [timerDuration, setTimerDuration] = useState(0); // 0 = infinite
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [onboardingStep, setOnboardingStep] = useState(0);
+  const [isCustomInputVisible, setIsCustomInputVisible] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const tapTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -141,9 +142,9 @@ export default function App() {
                   <ellipse cx="60" cy="150" rx="22" ry="12" fill="#D9A683" transform="rotate(-15 60 150)" />
                   <ellipse cx="140" cy="150" rx="22" ry="12" fill="#D9A683" transform="rotate(15 140 150)" />
 
-                  {/* Hands - Relaxed */}
-                  <circle cx="35" cy="115" r="18" fill="#F5CBA7" />
-                  <circle cx="165" cy="115" r="18" fill="#F5CBA7" />
+                  {/* Hands - Relaxed at sides */}
+                  <ellipse cx="25" cy="115" rx="12" ry="15" fill="#E6B89C" transform="rotate(-45 25 115)" />
+                  <ellipse cx="175" cy="115" rx="12" ry="15" fill="#E6B89C" transform="rotate(45 175 115)" />
 
                   {/* Body - Flattened */}
                   <ellipse cx="100" cy="110" rx="85" ry="55" fill="#F5CBA7" />
@@ -165,49 +166,67 @@ export default function App() {
             // AWAKE STATE
             <div className="relative animate-bounce-slow">
               <svg viewBox="0 0 200 200" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
-                {/* Hands/Paws */}
-                <circle cx="45" cy="100" r="18" fill="#F5CBA7" />
-                <circle cx="155" cy="100" r="18" fill="#F5CBA7" />
-
-                {/* Feet */}
+                {/* Feet - Planted */}
                 <ellipse cx="70" cy="165" rx="22" ry="12" fill="#D9A683" />
                 <ellipse cx="130" cy="165" rx="22" ry="12" fill="#D9A683" />
 
-                {/* Body Group for Breathing */}
-                <g className="animate-breathe-subtle origin-[100px_120px]">
-                  <circle cx="100" cy="110" r="65" fill="#F5CBA7" />
-                  <circle cx="100" cy="145" r="25" fill="#E6B89C" />
-                  <circle cx="100" cy="150" r="2.5" fill="#B08060" />
-                </g>
-
-                {/* Dark Circles (Only when manually overridden to awake) */}
-                {overrideMode === 'awake' && (
-                  <g opacity="0.4">
-                    <ellipse cx="70" cy="98" rx="18" ry="10" fill="#8B4513" />
-                    <ellipse cx="130" cy="98" rx="18" ry="10" fill="#8B4513" />
+                {/* Swaying Body & Face Group */}
+                <g className={`${isPlaying ? 'animate-dance' : 'animate-sway'} origin-[100px_165px]`}>
+                  {/* Hands - Side Nubs with Limb Animation */}
+                  <g className={`${isPlaying ? 'animate-wave-left' : 'animate-limb'} origin-[35px_110px]`}>
+                    <ellipse cx="35" cy="110" rx="12" ry="15" fill="#E6B89C" transform="rotate(-10 35 110)" />
                   </g>
-                )}
-
-                {/* Left Eye Group */}
-                <g className="animate-blink origin-[70px_85px]">
-                  <circle cx="70" cy="85" r="16" fill="#FFFFFF" />
-                  <g className="animate-eye-move">
-                    <circle cx="70" cy="85" r="9" fill="#1A1A1A" />
-                    <circle cx="67" cy="82" r="3" fill="#FFFFFF" />
+                  <g className={`${isPlaying ? 'animate-wave-right' : 'animate-limb'} origin-[165px_110px]`} style={isPlaying ? {} : { animationDelay: '-1.5s' }}>
+                    <ellipse cx="165" cy="110" rx="12" ry="15" fill="#E6B89C" transform="rotate(10 165 110)" />
                   </g>
-                </g>
 
-                {/* Right Eye Group */}
-                <g className="animate-blink origin-[130px_85px]">
-                  <circle cx="130" cy="85" r="16" fill="#FFFFFF" />
-                  <g className="animate-eye-move">
-                    <circle cx="130" cy="85" r="9" fill="#1A1A1A" />
-                    <circle cx="127" cy="82" r="3" fill="#FFFFFF" />
+                  {/* Body Group for Breathing */}
+                  <g className="animate-breathe-subtle origin-[100px_120px]">
+                    <circle cx="100" cy="110" r="65" fill="#F5CBA7" />
+                    <circle cx="100" cy="145" r="25" fill="#E6B89C" />
+                    <circle cx="100" cy="150" r="2.5" fill="#B08060" />
                   </g>
-                </g>
 
-                {/* Smile */}
-                <path d="M 85 105 Q 100 115 115 105" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" fill="transparent" />
+                  {/* Dark Circles (Only when manually overridden to awake) */}
+                  {overrideMode === 'awake' && (
+                    <g opacity="0.4">
+                      <ellipse cx="70" cy="98" rx="18" ry="10" fill="#8B4513" />
+                      <ellipse cx="130" cy="98" rx="18" ry="10" fill="#8B4513" />
+                    </g>
+                  )}
+
+                  {isPlaying ? (
+                    /* Happy Eyes (Upside down Us) */
+                    <g>
+                      <path d="M 55 90 Q 70 70 85 90" stroke="#1A1A1A" strokeWidth="4" fill="none" strokeLinecap="round" />
+                      <path d="M 115 90 Q 130 70 145 90" stroke="#1A1A1A" strokeWidth="4" fill="none" strokeLinecap="round" />
+                    </g>
+                  ) : (
+                    /* Normal Open Eyes */
+                    <>
+                      {/* Left Eye Group */}
+                      <g className="animate-blink origin-[70px_85px]">
+                        <circle cx="70" cy="85" r="16" fill="#FFFFFF" />
+                        <g className="animate-eye-move">
+                          <circle cx="70" cy="85" r="9" fill="#1A1A1A" />
+                          <circle cx="67" cy="82" r="3" fill="#FFFFFF" />
+                        </g>
+                      </g>
+
+                      {/* Right Eye Group */}
+                      <g className="animate-blink origin-[130px_85px]">
+                        <circle cx="130" cy="85" r="16" fill="#FFFFFF" />
+                        <g className="animate-eye-move">
+                          <circle cx="130" cy="85" r="9" fill="#1A1A1A" />
+                          <circle cx="127" cy="82" r="3" fill="#FFFFFF" />
+                        </g>
+                      </g>
+                    </>
+                  )}
+
+                  {/* Smile */}
+                  <path d="M 85 105 Q 100 115 115 105" stroke="#1A1A1A" strokeWidth="3" strokeLinecap="round" fill="transparent" />
+                </g>
               </svg>
             </div>
           )}
@@ -246,24 +265,71 @@ export default function App() {
 
             {/* Timer Controls */}
             <div className="flex items-center space-x-1 bg-white/5 p-1 rounded-xl backdrop-blur-sm border border-white/5">
-              {[
-                { label: '∞', value: 0 },
-                { label: '30s', value: 30000 },
-                { label: '1m', value: 60000 },
-                { label: '5m', value: 300000 },
-              ].map((option) => (
-                <button
-                  key={option.label}
-                  onClick={() => setTimerDuration(option.value)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    timerDuration === option.value 
-                      ? 'bg-white/20 text-white shadow-sm' 
-                      : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
+              {!isCustomInputVisible ? (
+                <>
+                  {[
+                    { label: '30s', value: 30000 },
+                    { label: '1m', value: 60000 },
+                    { label: '5m', value: 300000 },
+                  ].map((option) => (
+                    <button
+                      key={option.label}
+                      onClick={() => setTimerDuration(option.value)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        timerDuration === option.value 
+                          ? 'bg-white/20 text-white shadow-sm' 
+                          : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setIsCustomInputVisible(true)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      ![0, 30000, 60000, 300000].includes(timerDuration)
+                        ? 'bg-white/20 text-white shadow-sm' 
+                        : 'text-white/40 hover:text-white/70 hover:bg-white/5'
+                    }`}
+                  >
+                    {![0, 30000, 60000, 300000].includes(timerDuration) ? `${Math.floor(timerDuration / 60000)}m` : '+'}
+                  </button>
+
+                  {timerDuration > 0 && (
+                    <button
+                      onClick={() => setTimerDuration(0)}
+                      className="px-2 py-1.5 rounded-lg bg-red-900/80 text-white hover:bg-red-800 transition-colors"
+                      aria-label="Clear Timer"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </>
+              ) : (
+                <div className="flex items-center space-x-2 px-1 py-0.5">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    className="w-16 bg-white/10 rounded px-2 py-1 text-white text-xs focus:outline-none focus:ring-1 focus:ring-white/30"
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = parseInt(e.currentTarget.value);
+                        if (!isNaN(val) && val > 0) {
+                          setTimerDuration(val * 60000);
+                          setIsCustomInputVisible(false);
+                        }
+                      }
+                    }}
+                  />
+                  <button 
+                    onClick={() => setIsCustomInputVisible(false)}
+                    className="p-1 hover:bg-white/10 rounded-full text-white/60 hover:text-white transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -272,8 +338,13 @@ export default function App() {
       {/* Hidden Audio Element */}
       <audio 
         ref={audioRef} 
-        loop 
-        src="https://cdn.pixabay.com/download/audio/2022/10/14/audio_9939f792cb.mp3?filename=sweet-lullaby-11894.mp3" 
+        loop={timerDuration > 0}
+        onEnded={() => {
+          if (timerDuration === 0) {
+            setIsPlaying(false);
+          }
+        }}
+        src="https://raw.githubusercontent.com/Miguelocr/MiggyR/main/froggy_ena.mp3" 
       />
 
       {/* Settings Modal */}
